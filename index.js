@@ -2,7 +2,10 @@ var ejs = require('ejs')
   , through = require('through')
 
 module.exports = function(file, options) {
-  if (!/\.ejs$/.test(file)) return through()
+  
+  var match = file.match(/(.*\.ejs)@(\$|%)$/)
+
+  if (!match) return through()
 
   options = options || {}
 
@@ -14,7 +17,8 @@ module.exports = function(file, options) {
     var template = ejs.compile(buffer, {
         client: true
       , compileDebug: options.debug || false
-      , filename: file
+      , delimiter: match[2] || '%'
+      , filename: match[1]
     })
 
     this.queue('module.exports = (' + template + ')')
