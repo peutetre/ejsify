@@ -2,7 +2,7 @@ var ejs = require('ejs')
   , through = require('through')
 
 module.exports = function(file, options) {
-  
+
   var match = file.match(/(.*\.ejs)(\$|%|)$/)
 
   if (!match) return through()
@@ -18,7 +18,8 @@ module.exports = function(file, options) {
         client: true
       , compileDebug: options.debug || false
       , delimiter: match[2].length > 0 ? match[2] : '%'
-      , filename: match[1]
+      , filename: file
+      , 'async': options.async || false
     })
 
     this.queue('module.exports = (' + template + ')')
